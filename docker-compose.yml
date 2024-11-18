@@ -1,0 +1,22 @@
+services:
+  nginx:
+    build: ./docker/nginx
+    container_name: nginx
+    ports:
+      - '80:80'
+    volumes:
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./blog/dist:/usr/share/nginx/html
+    depends_on:
+      - blog
+    restart: always
+
+  blog:
+    build:
+      context: .
+      dockerfile: /docker/blog/Dockerfile
+    container_name: blog
+    volumes:
+      - ./blog:/var/www/blog
+    command: >
+      sh -c "npm install && npm run build"
